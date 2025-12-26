@@ -40,14 +40,21 @@ Amaç: Girilen bir metnin **İnsan** veya **Yapay Zeka** tarafından yazılıp y
 - Singleton Pattern ile optimize edilmiş model yükleme
 
 ---
+
 ## Ekran Görüntüleri
 
-### 1. Ana Sayfa Arayüzü
-Modern ve sade kullanıcı arayüzü.
-![Ana Sayfa](images/home_page.png)
+### 1. Ana Sayfa ve Veri Girişi
+Kullanıcının metin girdiği, modern ve sade arayüz tasarımı.
+![Ana Sayfa Arayüzü](https://github.com/ireemkaya1/ai-summary-detector/blob/main/images/home_page.png/Ekran%20Resmi%202025-12-26%2006.08.59.png?raw=true)
 
 ---
 
-### 2. Tahmin Sonucu
-Modelin analiz sonucu ve olasılık grafikleri.
-![Tahmin Sonucu](images/prediction_result.png)
+### 2. Yapay Zeka (AI) Tespiti
+Modelin, yapay zeka tarafından üretilen bir metni tespit ettiği örnek senaryo.
+![AI Sonucu](https://github.com/ireemkaya1/ai-summary-detector/blob/main/images/prediction_result.png/Ekran%20Resmi%202025-12-26%2006.10.15.png?raw=true)
+
+---
+
+### 3. İnsan (Human) Tespiti
+Gerçek bir insan tarafından yazılan akademik metnin analiz sonucu.
+![Human Sonucu](https://github.com/ireemkaya1/ai-summary-detector/blob/main/images/prediction_result.png/Ekran%20Resmi%202025-12-26%2006.11.32.png?raw=true)
