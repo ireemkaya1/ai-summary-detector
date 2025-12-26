@@ -1,0 +1,28 @@
+============================================================
+MODEL DEĞERLENDİRME SONUÇLARI
+Tarih: 2025-12-25 21:12:45
+============================================================
+
+LogisticRegression
+----------------------------------------
+  Accuracy:  0.9983
+  Precision: 0.9967
+  Recall:    1.0000
+  F1 Score:  0.9983
+
+MultinomialNB
+----------------------------------------
+  Accuracy:  0.9967
+  Precision: 0.9934
+  Recall:    1.0000
+  F1 Score:  0.9967
+
+SGDClassifier
+----------------------------------------
+  Accuracy:  1.0000
+  Precision: 1.0000
+  Recall:    1.0000
+  F1 Score:  1.0000
+
+
+En İyi Model (F1 Score): SGDClassifier (1.0000)

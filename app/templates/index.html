@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human or AI Classifier</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================
+           RETRO NEON THEME - Color Palette
+           ------------------------------------------
+           Deep Navy:    #0B1020
+           Purple:       #6D28D9
+           Cyan:         #22D3EE
+           Pink:         #FB7185
+           Amber:        #FBBF24
+           Dark Card:    #111827
+           Glass:        rgba(17, 24, 39, 0.8)
+           ============================================ */
+        
+        :root {
+            --deep-navy: #0B1020;
+            --purple: #6D28D9;
+            --purple-light: #8B5CF6;
+            --cyan: #22D3EE;
+            --cyan-dark: #0891B2;
+            --pink: #FB7185;
+            --pink-dark: #E11D48;
+            --amber: #FBBF24;
+            --dark-card: #111827;
+            --glass-bg: rgba(17, 24, 39, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --text-muted: #6B7280;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--deep-navy) 0%, #1a1040 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(109, 40, 217, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(251, 113, 133, 0.08) 0%, transparent 40%);
+            animation: bgPulse 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-5%, -5%) scale(1.1); }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Main Glass Card */
+        .main-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 0 80px -20px rgba(109, 40, 217, 0.3);
+        }
+        
+        /* Header */
+        .header-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, rgba(109, 40, 217, 0.3), rgba(34, 211, 238, 0.2));
+            border: 1px solid rgba(109, 40, 217, 0.5);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+        }
+        
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--cyan) 50%, var(--purple-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        .subtitle a {
+            color: var(--cyan);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        
+        .subtitle a:hover {
+            color: var(--pink);
+        }
+        
+        /* Form Label */
+        .form-label-custom {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Textarea - Dark Glassmorphism */
+        .textarea-retro {
+            background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 100%);
+            border: 2px solid rgba(34, 211, 238, 0.3);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            padding: 1.25rem;
+            min-height: 200px;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        
+        .textarea-retro::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+        
+        .textarea-retro:focus {
+            outline: none;
+            border-color: var(--cyan);
+            box-shadow: 
+                0 0 0 4px rgba(34, 211, 238, 0.15),
+                0 0 30px -5px rgba(34, 211, 238, 0.4),
+                0 0 60px -10px rgba(109, 40, 217, 0.2) inset;
+            background: linear-gradient(145deg, #131c31 0%, #251f5a 100%);
+        }
+        
+        /* Character counter */
+        .char-counter {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Buttons */
+        .btn-predict {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--pink-dark) 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-predict::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-predict:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 40px -10px rgba(109, 40, 217, 0.5),
+                0 0 20px rgba(251, 113, 133, 0.3);
+        }
+        
+        .btn-predict:hover::before {
+            left: 100%;
+        }
+        
+        .btn-predict:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-clear {
+            background: transparent;
+            border: 2px solid var(--text-muted);
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-clear:hover {
+            border-color: var(--pink);
+            color: var(--pink);
+            background: rgba(251, 113, 133, 0.1);
+        }
+        
+        /* Alert */
+        .alert-retro {
+            background: rgba(225, 29, 72, 0.15);
+            border: 1px solid rgba(251, 113, 133, 0.4);
+            border-radius: 12px;
+            color: var(--pink);
+        }
+        
+        .alert-retro .btn-close {
+            filter: invert(1) brightness(0.8);
+        }
+        
+        /* Divider */
+        .divider {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-border), rgba(34, 211, 238, 0.3), var(--glass-border), transparent);
+            margin: 2.5rem 0;
+        }
+        
+        /* Result Card */
+        .result-card {
+            background: linear-gradient(145deg, rgba(17, 24, 39, 0.9), rgba(30, 27, 75, 0.6));
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .result-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Prediction Badges */
+        .badge-ai-result {
+            background: linear-gradient(135deg, var(--pink-dark) 0%, var(--pink) 100%);
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 20px -5px rgba(251, 113, 133, 0.5);
+        }
+        
+        .badge-human-result {
+            background: linear-gradient(135deg, var(--cyan-dark) 0%, var(--cyan) 100%);
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 20px -5px rgba(34, 211, 238, 0.5);
+        }
+        
+        /* Progress Bars */
+        .progress-retro {
+            height: 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+        
+        .progress-retro-lg {
+            height: 24px;
+            border-radius: 12px;
+        }
+        
+        .progress-bar-ai {
+            background: linear-gradient(90deg, var(--pink-dark) 0%, var(--pink) 100%);
+            border-radius: 10px;
+            transition: width 0.8s ease-out;
+        }
+        
+        .progress-bar-human {
+            background: linear-gradient(90deg, var(--cyan-dark) 0%, var(--cyan) 100%);
+            border-radius: 10px;
+            transition: width 0.8s ease-out;
+        }
+        
+        .prob-label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .prob-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+        
+        /* Model Results */
+        .section-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .model-row {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .model-row:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(109, 40, 217, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .model-row.best-model {
+            background: linear-gradient(135deg, rgba(109, 40, 217, 0.15), rgba(34, 211, 238, 0.1));
+            border: 1px solid rgba(109, 40, 217, 0.4);
+            box-shadow: 0 0 30px -10px rgba(109, 40, 217, 0.3);
+        }
+        
+        .model-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .star-badge {
+            background: linear-gradient(135deg, var(--amber) 0%, #F59E0B 100%);
+            color: #1F2937;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .badge-ai-small {
+            background: var(--pink);
+            color: white;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        
+        .badge-human-small {
+            background: var(--cyan);
+            color: #0B1020;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        
+        .model-prob-text {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        
+        /* Footer */
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 1.75rem;
+            }
+            
+            .main-card {
+                border-radius: 20px;
+            }
+            
+            .btn-predict, .btn-clear {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Smooth Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-in {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4 py-md-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="main-card p-4 p-md-5">
+                    
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <span class="header-badge">
+                            <i class="bi bi-cpu me-1"></i> HUMAN OR AI
+                        </span>
+                        <h1 class="main-title">Human or AI Classifier</h1>
+                        <p class="subtitle">
+                            Makale özetinizi yazın, <a href="#">Human</a> / <a href="#">AI</a> olasılıklarını analiz edin.
+                        </p>
+                    </div>
+
+                    <!-- Error Alert -->
+                    {% if error %}
+                    <div class="alert alert-retro alert-dismissible fade show mb-4" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <!-- Form -->
+                    <form method="POST" action="/predict" id="predictForm">
+                        <div class="mb-4">
+                            <label for="textInput" class="form-label form-label-custom">
+                                Makale Özeti
+                            </label>
+                            <textarea 
+                                class="form-control textarea-retro" 
+                                id="textInput" 
+                                name="text" 
+                                rows="8" 
+                                placeholder="Özeti yazın..."
+                            >{{ text }}</textarea>
+                            <div class="mt-2 char-counter">
+                                <span id="charCount">0</span> karakter
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 flex-wrap">
+                            <button type="submit" class="btn btn-predict">
+                                Özeti Analiz Et <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                            <button type="button" class="btn btn-clear" onclick="clearForm()">
+                                <i class="bi bi-x-lg me-2"></i>Temizle
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Footer hint (no results) -->
+                    {% if not result %}
+                    <div class="text-center mt-4 footer-text">
+                        <small>Human or AI</small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Results -->
+                    {% if result %}
+                    <hr class="divider">
+                    
+                    <!-- Overall Result -->
+                    <div class="result-card p-4 mb-4 animate-in">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                            <h5 class="result-title mb-0">
+                                <i class="bi bi-bar-chart-fill me-2"></i>Genel Tahmin
+                            </h5>
+                            
+                            {% if result.overall.prediction == 'ai' %}
+                            <span class="badge badge-ai-result">
+                                Genel Tahmin: AI Yazımı Benzerisi
+                            </span>
+                            {% else %}
+                            <span class="badge badge-human-result">
+                                Genel Tahmin: Human Yazımı Benzerisi
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Combined Progress Bar -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted small">Human</span>
+                                <span class="text-muted small">AI</span>
+                            </div>
+                            <div class="progress-retro progress-retro-lg" style="position: relative;">
+                                <div class="progress-bar-human" 
+                                     role="progressbar" 
+                                     data-width="{{ result.overall.human_probability }}"
+                                     style="position: absolute; left: 0; height: 100%;">
+                                </div>
+                                <div class="progress-bar-ai" 
+                                     role="progressbar" 
+                                     data-width="{{ result.overall.ai_probability }}"
+                                     style="position: absolute; right: 0; height: 100%;">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span class="prob-value" style="color: var(--cyan);">Human %{{ result.overall.human_probability }}</span>
+                                <span class="prob-value" style="color: var(--pink);">AI %{{ result.overall.ai_probability }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model-wise Results -->
+                    <h6 class="section-title mb-3">
+                        <i class="bi bi-diagram-3 me-2"></i>MODEL BAZLI SONUÇLAR
+                    </h6>
+                    
+                    {% for model in result.models %}
+                    <div class="model-row mb-3 animate-in {% if model.model_name == result.best_model %}best-model{% endif %}" data-delay="{{ loop.index }}">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="model-name">{{ model.model_name }}</span>
+                                {% if model.model_name == result.best_model %}
+                                <span class="star-badge">
+                                    <i class="bi bi-star-fill me-1"></i>Önerilen
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if model.prediction == 'ai' %}
+                                <span class="badge badge-ai-small">AI</span>
+                                {% else %}
+                                <span class="badge badge-human-small">Human</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small class="model-prob-text">AI</small>
+                                    <small class="model-prob-text">{{ model.ai_probability }}%</small>
+                                </div>
+                                <div class="progress-retro">
+                                    <div class="progress-bar-ai" 
+                                         data-width="{{ model.ai_probability }}"
+                                         role="progressbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small class="model-prob-text">Human</small>
+                                    <small class="model-prob-text">{{ model.human_probability }}%</small>
+                                </div>
+                                <div class="progress-retro">
+                                    <div class="progress-bar-human" 
+                                         data-width="{{ model.human_probability }}"
+                                         role="progressbar">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Karakter sayacı
+        const textInput = document.getElementById('textInput');
+        const charCount = document.getElementById('charCount');
+        
+        function updateCharCount() {
+            if (textInput && charCount) {
+                charCount.textContent = textInput.value.length;
+            }
+        }
+        
+        if (textInput) {
+            textInput.addEventListener('input', updateCharCount);
+            updateCharCount();
+        }
+        
+        // Formu temizle
+        function clearForm() {
+            if (textInput) {
+                textInput.value = '';
+                updateCharCount();
+            }
+            window.location.href = '/';
+        }
+        
+        // Progress bar animasyonu
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('[data-width]');
+            
+            setTimeout(() => {
+                progressBars.forEach(function(bar) {
+                    const width = bar.getAttribute('data-width');
+                    bar.style.width = width + '%';
+                });
+            }, 100);
+            
+            // Animation delay for model rows (from data-delay attribute)
+            const modelRows = document.querySelectorAll('[data-delay]');
+            modelRows.forEach(function(row) {
+                const delay = row.getAttribute('data-delay');
+                row.style.animationDelay = (delay * 0.1) + 's';
+            });
+        });
+    </script>
+</body>
+</html>

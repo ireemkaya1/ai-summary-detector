@@ -1,0 +1,20 @@
+{
+  "LogisticRegression": {
+    "accuracy": 0.9983333333333333,
+    "precision": 0.9966777408637874,
+    "recall": 1.0,
+    "f1_score": 0.9983361064891847
+  },
+  "MultinomialNB": {
+    "accuracy": 0.9966666666666667,
+    "precision": 0.9933774834437086,
+    "recall": 1.0,
+    "f1_score": 0.9966777408637874
+  },
+  "SGDClassifier": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0
+  }
+}
