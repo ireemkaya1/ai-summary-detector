@@ -40,15 +40,14 @@ Amaç: Girilen bir metnin **İnsan** veya **Yapay Zeka** tarafından yazılıp y
 - Singleton Pattern ile optimize edilmiş model yükleme
 
 ---
+## Ekran Görüntüleri
 
-## 📁 Ekran Görüntüleri
-
-### Ana Sayfa
-
+### 1. Ana Sayfa Arayüzü
+Modern ve sade kullanıcı arayüzü.
 ![Ana Sayfa](images/home_page.png)
 
-### Tahmin Sonucu
+---
 
+### 2. Tahmin Sonucu
+Modelin analiz sonucu ve olasılık grafikleri.
 ![Tahmin Sonucu](images/prediction_result.png)
-
-
